@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>CBH Learn — ทดสอบ GAS Connection</title>
+<style>
+body { font-family: 'Segoe UI', sans-serif; background: #07111a; color: #e0e7ef; padding: 30px; max-width: 700px; margin: 0 auto; }
+h1 { color: #00c6e0; margin-bottom: 6px; }
+p { color: #7a8fa6; font-size: 14px; }
+.card { background: #0d1e31; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 24px; margin: 20px 0; }
+input { width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 13px; box-sizing: border-box; }
+button { padding: 10px 24px; background: #00c6e0; color: #000; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; margin: 8px 4px; font-size: 14px; }
+button.sec { background: rgba(255,255,255,0.08); color: #fff; }
+.result { margin-top: 16px; padding: 14px; border-radius: 8px; font-size: 13px; line-height: 1.6; word-break: break-all; }
+.ok  { background: rgba(6,214,160,0.1); border: 1px solid rgba(6,214,160,0.3); color: #06d6a0; }
+.err { background: rgba(239,71,111,0.1); border: 1px solid rgba(239,71,111,0.3); color: #ef476f; }
+.warn{ background: rgba(244,162,97,0.1); border: 1px solid rgba(244,162,97,0.3); color: #f4a261; }
+pre { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 6px; overflow-x: auto; font-size: 11px; margin-top: 10px; }
+label { font-size: 12px; color: #7a8fa6; display: block; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; }
+</style>
+</head>
+<body>
+<h1>🔧 CBH Learn — ทดสอบ GAS Connection</h1>
+<p>ใช้หน้านี้ตรวจสอบว่า Google Apps Script URL เชื่อมต่อได้หรือไม่</p>
+
+<div class="card">
+  <label>GAS URL (วาง URL ที่ได้จาก Deploy)</label>
+  <input id="gasUrl" placeholder="https://script.google.com/macros/s/AKfy.../exec"
+         value="https://script.google.com/macros/s/AKfycbwXQ7keoFw6Sb1H5CiSNBfdqIXyZIb4-9pvDvodHWWM1stRe8ugKljEXsn0FW6yvzId/exec">
+  <div style="margin-top:14px; display:flex;flex-wrap:wrap;gap:8px">
+    <button onclick="testPing()">🏓 Ping</button>
+    <button onclick="testSetup()" class="sec">⚙️ Setup Sheets</button>
+    <button onclick="testLogin()" class="sec">🔐 ทดสอบ Login</button>
+    <button onclick="copyToAppJs()" class="sec">📋 Copy URL</button>
+  </div>
+</div>
+
+<div id="log"></div>
+
+<div class="card" style="margin-top:30px">
+  <h3 style="margin:0 0 14px;font-size:15px;color:#f4a261">⚠️ ขั้นตอนถ้าเชื่อมไม่ได้</h3>
+  <ol style="font-size:13px;color:#7a8fa6;line-height:2;margin:0;padding-left:20px">
+    <li>เปิด Google Sheets → Extensions → Apps Script</li>
+    <li>วางโค้ดจาก <strong style="color:#00c6e0">gas/Code.gs</strong> ทั้งหมด → Save (Ctrl+S)</li>
+    <li>Deploy → <strong>New Deployment</strong> (ต้องใช้ New ไม่ใช่ Manage)</li>
+    <li>Type: <strong>Web App</strong> · Execute as: <strong>Me</strong> · Access: <strong>Anyone</strong></li>
+    <li>Authorize → Deploy → Copy URL</li>
+    <li>วาง URL ในช่องด้านบน → กด Ping</li>
+    <li>ถ้าผ่าน → กด Setup Sheets → แล้วกด Copy URL → วางใน <strong style="color:#00c6e0">js/app.js</strong> บรรทัด <code>const GAS_URL = '...'</code></li>
+  </ol>
+</div>
+
+<script>
+function log(html, type='ok') {
+  const d = document.createElement('div');
+  d.className = 'result ' + type;
+  d.innerHTML = html;
+  document.getElementById('log').prepend(d);
+}
+
+function getUrl() {
+  const url = document.getElementById('gasUrl').value.trim();
+  if(!url) { log('❌ กรุณากรอก GAS URL', 'err'); return null; }
+  if(!url.includes('script.google.com')) { log('❌ URL ไม่ถูกต้อง', 'err'); return null; }
+  return url;
+}
+
+async function testPing() {
+  const url = getUrl(); if(!url) return;
+  log('⏳ กำลัง Ping...', 'warn');
+  try {
+    const res = await fetch(url + '?action=ping', { redirect:'follow', mode:'cors' });
+    const text = await res.text();
+    const data = JSON.parse(text);
+    if(data.success) {
+      document.getElementById('log').firstChild.remove();
+      log('✅ <strong>เชื่อมต่อสำเร็จ!</strong> GAS ตอบสนองปกติ<br>' +
+          '<pre>ts: ' + data.ts + '</pre>', 'ok');
+    } else {
+      log('⚠️ GAS ตอบกลับแต่ไม่สำเร็จ<pre>' + JSON.stringify(data,null,2) + '</pre>', 'warn');
+    }
+  } catch(e) {
+    document.getElementById('log').firstChild?.remove();
+    log('❌ <strong>เชื่อมต่อไม่ได้</strong><br>Error: ' + e.message +
+        '<br><br>สาเหตุที่เป็นไปได้:<ul>' +
+        '<li>GAS ยังไม่ได้ Deploy (ต้องกด New Deployment)</li>' +
+        '<li>Access ตั้งเป็น "Only me" → ต้องเปลี่ยนเป็น "Anyone"</li>' +
+        '<li>URL ผิด หรือ Deployment เก่า</li>' +
+        '</ul>', 'err');
+  }
+}
+
+async function testSetup() {
+  const url = getUrl(); if(!url) return;
+  log('⏳ กำลัง Setup Sheets...', 'warn');
+  try {
+    const res = await fetch(url + '?action=setup', { redirect:'follow', mode:'cors' });
+    const data = JSON.parse(await res.text());
+    document.getElementById('log').firstChild.remove();
+    if(data.success) {
+      log('✅ <strong>Setup สำเร็จ!</strong> Sheets และข้อมูลตัวอย่างพร้อมแล้ว<pre>' + JSON.stringify(data,null,2) + '</pre>', 'ok');
+    } else {
+      log('⚠️ ' + (data.error||JSON.stringify(data)), 'warn');
+    }
+  } catch(e) {
+    document.getElementById('log').firstChild?.remove();
+    log('❌ Setup ล้มเหลว: ' + e.message, 'err');
+  }
+}
+
+async function testLogin() {
+  const url = getUrl(); if(!url) return;
+  log('⏳ ทดสอบ Login admin/admin...', 'warn');
+  try {
+    const res = await fetch(url + '?action=login&username=admin&password=admin', { redirect:'follow', mode:'cors' });
+    const data = JSON.parse(await res.text());
+    document.getElementById('log').firstChild.remove();
+    if(data.success) {
+      log('✅ <strong>Login สำเร็จ!</strong><br>ชื่อ: ' + data.user?.name + ' · Role: ' + data.user?.role, 'ok');
+    } else {
+      log('⚠️ Login ไม่สำเร็จ: ' + (data.error||JSON.stringify(data)) + '<br>ลอง Setup Sheets ก่อน', 'warn');
+    }
+  } catch(e) {
+    document.getElementById('log').firstChild?.remove();
+    log('❌ ทดสอบ Login ล้มเหลว: ' + e.message, 'err');
+  }
+}
+
+function copyToAppJs() {
+  const url = getUrl(); if(!url) return;
+  navigator.clipboard?.writeText(url).then(()=>{
+    log('📋 Copy URL แล้ว! วางใน js/app.js บรรทัด<br><code>const GAS_URL = \'' + url + '\';</code>', 'ok');
+  }).catch(()=>{
+    log('📋 URL: <code>' + url + '</code><br>Copy ด้วยตัวเองแล้ววางใน js/app.js', 'warn');
+  });
+}
+</script>
+</body>
+</html>
