@@ -2,179 +2,108 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>CBH Learn — โรงพยาบาลชลบุรี</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<!-- ═══════════════════════════════ LOADING ═══════════════════════════════ -->
-<div id="loading-overlay"><div class="spinner"></div><p>กำลังเชื่อมต่อ Google Sheet...</p></div>
-
-<!-- ═══════════════════════════════ TOASTS ════════════════════════════════ -->
+<div id="loading-overlay"><div class="spinner"></div><p>กำลังโหลด...</p></div>
 <div id="toast-shelf"></div>
 
-<!-- ═══════════════════════════════ MODALS ════════════════════════════════ -->
-
-<!-- Modal: User Create/Edit -->
+<!-- ════════ MODAL: User ════════ -->
 <div class="modal-overlay" id="modal-user">
   <div class="modal-card" style="max-width:560px">
-    <div class="modal-head">
-      <h3 id="modal-user-title">➕ เพิ่มผู้ใช้งาน</h3>
-      <button class="btn-close" onclick="closeModal('modal-user')">✕</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="modal-user-id" data-id="">
-      <div id="modal-user-form"><!-- injected by buildUserForm() --></div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="closeModal('modal-user')">ยกเลิก</button>
-      <button class="btn btn-teal" onclick="saveUser()">💾 บันทึก</button>
-    </div>
+    <div class="modal-head"><h3 id="modal-user-title">➕ เพิ่มผู้ใช้</h3><button class="btn-close" onclick="closeModal('modal-user')">✕</button></div>
+    <div class="modal-body"><input type="hidden" id="modal-user-id" data-id=""><div id="modal-user-form"></div></div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('modal-user')">ยกเลิก</button><button class="btn btn-teal" onclick="saveUser()">💾 บันทึก</button></div>
   </div>
 </div>
 
-<!-- Modal: Reset Password -->
+<!-- ════════ MODAL: Reset Password ════════ -->
 <div class="modal-overlay" id="modal-reset-pwd">
   <div class="modal-card" style="max-width:400px">
-    <div class="modal-head">
-      <h3>🔑 รีเซ็ตรหัสผ่าน</h3>
-      <button class="btn-close" onclick="closeModal('modal-reset-pwd')">✕</button>
-    </div>
+    <div class="modal-head"><h3>🔑 รีเซ็ตรหัสผ่าน</h3><button class="btn-close" onclick="closeModal('modal-reset-pwd')">✕</button></div>
     <div class="modal-body">
-      <input type="hidden" id="modal-reset-id" data-id="" data-name="">
-      <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px">
-        รีเซ็ตรหัสผ่านสำหรับ: <strong id="reset-pwd-name" style="color:var(--teal)">—</strong>
-      </p>
-      <div class="form-group">
-        <label>รหัสผ่านใหม่</label>
-        <div class="input-wrap">
-          <span class="input-icon">🔒</span>
-          <input class="form-control" id="new-pwd-input" type="text" placeholder="รหัสผ่านใหม่ (อย่างน้อย 4 ตัว)"
-                 onkeyup="if(event.key==='Enter')doResetPwd()">
-        </div>
-      </div>
+      <input type="hidden" id="modal-reset-id" data-id="">
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px">รีเซ็ตสำหรับ: <strong id="reset-pwd-name" style="color:var(--teal)">—</strong></p>
+      <div class="form-group"><label>รหัสผ่านใหม่</label><div class="input-wrap"><span class="input-icon">🔒</span><input class="form-control" id="new-pwd-input" type="text" placeholder="อย่างน้อย 4 ตัวอักษร"></div></div>
     </div>
-    <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="closeModal('modal-reset-pwd')">ยกเลิก</button>
-      <button class="btn btn-teal" onclick="doResetPwd()">🔑 ยืนยัน</button>
-    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('modal-reset-pwd')">ยกเลิก</button><button class="btn btn-teal" onclick="doResetPwd()">🔑 ยืนยัน</button></div>
   </div>
 </div>
 
-<!-- Modal: Course Create/Edit -->
+<!-- ════════ MODAL: Course ════════ -->
 <div class="modal-overlay" id="modal-course">
-  <div class="modal-card" style="max-width:580px">
-    <div class="modal-head">
-      <h3 id="modal-course-title">➕ สร้างหลักสูตร</h3>
-      <button class="btn-close" onclick="closeModal('modal-course')">✕</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="modal-course-id" data-id="">
-      <div id="modal-course-form"><!-- injected by buildCourseForm() --></div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="closeModal('modal-course')">ยกเลิก</button>
-      <button class="btn btn-teal" onclick="saveCourse()">💾 บันทึกหลักสูตร</button>
-    </div>
+  <div class="modal-card" style="max-width:640px">
+    <div class="modal-head"><h3 id="modal-course-title">➕ สร้างหลักสูตร</h3><button class="btn-close" onclick="closeModal('modal-course')">✕</button></div>
+    <div class="modal-body"><input type="hidden" id="modal-course-id" data-id=""><div id="modal-course-form"></div></div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('modal-course')">ยกเลิก</button><button class="btn btn-teal" onclick="saveCourse()">💾 บันทึกหลักสูตร</button></div>
   </div>
 </div>
 
-<!-- Modal: Audit Detail -->
+<!-- ════════ MODAL: Quiz Editor ════════ -->
+<div class="modal-overlay" id="modal-quiz">
+  <div class="modal-card" style="max-width:700px">
+    <div class="modal-head"><h3>📝 จัดการแบบทดสอบ</h3><button class="btn-close" onclick="closeModal('modal-quiz')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="modal-quiz-cid">
+      <div id="quiz-editor-wrap"></div>
+      <button class="btn btn-ghost btn-sm" onclick="addQuizQuestion()" style="margin-top:12px">➕ เพิ่มข้อ</button>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('modal-quiz')">ยกเลิก</button><button class="btn btn-teal" onclick="saveQuizQuestions()">💾 บันทึกแบบทดสอบ</button></div>
+  </div>
+</div>
+
+<!-- ════════ MODAL: Audit Detail ════════ -->
 <div class="modal-overlay" id="modal-audit-detail">
   <div class="modal-card" style="max-width:500px">
-    <div class="modal-head">
-      <h3>🔍 รายละเอียด Audit</h3>
-      <button class="btn-close" onclick="closeModal('modal-audit-detail')">✕</button>
-    </div>
+    <div class="modal-head"><h3>🔍 รายละเอียด</h3><button class="btn-close" onclick="closeModal('modal-audit-detail')">✕</button></div>
     <div class="modal-body" id="modal-audit-content"></div>
-    <div class="modal-foot">
-      <button class="btn btn-teal" onclick="closeModal('modal-audit-detail')">ปิด</button>
-    </div>
+    <div class="modal-foot"><button class="btn btn-teal" onclick="closeModal('modal-audit-detail')">ปิด</button></div>
   </div>
 </div>
 
-<!-- ════════════════════════════ SCREEN: LOGIN ════════════════════════════ -->
+<!-- ════════════════ SCREEN: LOGIN ════════════════ -->
 <div id="screen-login" class="screen active">
   <div class="login-wrapper">
-
-    <!-- Left Art Panel -->
     <div class="login-art">
       <div class="login-art-logo">
         <div class="logo-mark">🏥</div>
-        <div class="logo-text">
-          <h1>CBH Learn</h1>
-          <p>โรงพยาบาลชลบุรี</p>
-        </div>
+        <div class="logo-text"><h1>CBH Learn</h1><p>โรงพยาบาลชลบุรี</p></div>
       </div>
-
       <div class="login-art-body">
         <h2>ระบบการเรียนรู้<br>บุคลากรพยาบาล</h2>
-        <p>พัฒนาทักษะและความรู้<br>ด้านการพยาบาลอย่างมืออาชีพ<br>ผ่านหลักสูตรออนไลน์คุณภาพสูง</p>
+        <p>พัฒนาทักษะและความรู้ด้านการพยาบาล<br>ผ่านหลักสูตรออนไลน์คุณภาพสูง</p>
         <div class="login-art-stats">
           <div class="art-stat"><div class="v">16</div><div class="l">กลุ่มงาน</div></div>
           <div class="art-stat"><div class="v">74</div><div class="l">หน่วยงาน</div></div>
           <div class="art-stat"><div class="v">24/7</div><div class="l">เข้าเรียน</div></div>
         </div>
       </div>
-
-      <div class="login-art-footer">
-        © โรงพยาบาลชลบุรี · CBH Learn v3.0
-      </div>
+      <div class="login-art-footer">© โรงพยาบาลชลบุรี · CBH Learn v3.0</div>
     </div>
-
-    <!-- Right Form Panel -->
     <div class="login-form-panel">
       <h2>เข้าสู่ระบบ</h2>
       <p>กรุณากรอกข้อมูลเพื่อเข้าใช้งาน</p>
-
-      <div class="form-group">
-        <label>ชื่อผู้ใช้</label>
-        <div class="input-wrap">
-          <span class="input-icon">👤</span>
-          <input id="login-user" class="form-control" placeholder="Username / รหัสพนักงาน"
-                 autocomplete="username"
-                 onkeyup="if(event.key==='Enter')document.getElementById('login-pass').focus()">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>รหัสผ่าน</label>
-        <div class="input-wrap">
-          <span class="input-icon">🔒</span>
-          <input id="login-pass" class="form-control" type="password" placeholder="รหัสผ่าน"
-                 autocomplete="current-password"
-                 onkeyup="if(event.key==='Enter')doLogin()">
-        </div>
-      </div>
-
+      <div class="form-group"><label>ชื่อผู้ใช้</label><div class="input-wrap"><span class="input-icon">👤</span><input id="login-user" class="form-control" placeholder="Username / รหัสพนักงาน" autocomplete="username" onkeyup="if(event.key==='Enter')document.getElementById('login-pass').focus()"></div></div>
+      <div class="form-group"><label>รหัสผ่าน</label><div class="input-wrap"><span class="input-icon">🔒</span><input id="login-pass" class="form-control" type="password" placeholder="รหัสผ่าน" autocomplete="current-password" onkeyup="if(event.key==='Enter')doLogin()"></div></div>
       <button class="btn-primary" onclick="doLogin()">เข้าสู่ระบบ →</button>
+      <div id="login-error" class="form-error"></div>
       <div class="login-divider">ยังไม่มีบัญชี?</div>
-      <button class="demo-btn" onclick="showScreen('screen-register');populateDeptSelects()">
-        <span>บุคลากรใหม่ — สมัครใช้งาน</span>
-        <span class="demo-tag tag-learner">สมัคร →</span>
-      </button>
-
-      <div id="login-error" style="display:none;margin-top:14px;padding:10px 14px;background:rgba(239,71,111,0.12);border:1px solid rgba(239,71,111,0.3);border-radius:8px;font-size:13px;color:#ef476f;"></div>
+      <button class="demo-btn" onclick="showScreen('screen-register');populateDeptSelects()"><span>บุคลากรใหม่ — สมัครใช้งาน</span><span class="demo-tag tag-learner">สมัคร →</span></button>
     </div>
-
   </div>
 </div>
 
-<!-- ════════════════════════════ SCREEN: REGISTER ════════════════════════════ -->
+<!-- ════════════════ SCREEN: REGISTER ════════════════ -->
 <div id="screen-register" class="screen">
   <div class="login-wrapper">
     <div class="login-art">
-      <div class="login-art-logo">
-        <div class="logo-mark">🏥</div>
-        <div class="logo-text">
-          <h1>CBH Learn</h1>
-          <p>โรงพยาบาลชลบุรี</p>
-        </div>
-      </div>
+      <div class="login-art-logo"><div class="logo-mark">🏥</div><div class="logo-text"><h1>CBH Learn</h1><p>โรงพยาบาลชลบุรี</p></div></div>
       <div class="login-art-body">
         <h2>สมัครเรียน<br>ด้วยตัวเอง</h2>
-        <p>บุคลากรพยาบาลสามารถสมัครเข้าใช้งานระบบได้ทันที เลือกกลุ่มงานและหน่วยงานของตัวเอง</p>
+        <p>บุคลากรพยาบาลสามารถสมัครเข้าใช้งานได้ทันที เลือกกลุ่มงานและหน่วยงานของตัวเอง</p>
         <div class="login-art-stats">
           <div class="art-stat"><div class="v">16</div><div class="l">กลุ่มงาน</div></div>
           <div class="art-stat"><div class="v">74</div><div class="l">หน่วยงาน</div></div>
@@ -183,90 +112,39 @@
       </div>
       <div class="login-art-footer">© โรงพยาบาลชลบุรี · CBH Learn v3.0</div>
     </div>
-    <div class="login-form-panel" style="overflow-y:auto;max-height:100vh">
-      <h2>สมัครใช้งาน</h2>
-      <p>กรอกข้อมูลเพื่อสร้างบัญชีผู้เรียน</p>
-      <div class="form-group">
-        <label>ชื่อ-นามสกุล *</label>
-        <div class="input-wrap"><span class="input-icon">👤</span>
-          <input class="form-control" id="reg-name" placeholder="ชื่อ-นามสกุล">
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Username *</label>
-        <div class="input-wrap"><span class="input-icon">🔖</span>
-          <input class="form-control" id="reg-username" placeholder="รหัสพนักงาน / username">
-        </div>
-      </div>
-      <div class="form-group">
-        <label>รหัสผ่าน *</label>
-        <div class="input-wrap"><span class="input-icon">🔒</span>
-          <input class="form-control" id="reg-password" type="password" placeholder="ตั้งรหัสผ่าน (อย่างน้อย 4 ตัว)">
-        </div>
-      </div>
-      <div class="form-group">
-        <label>กลุ่มงาน *</label>
-        <div class="input-wrap"><span class="input-icon">🏢</span>
-          <select class="form-control dept-select" id="reg-dept" onchange="onRegDeptChange(this.value)">
-            <option value="">-- เลือกกลุ่มงาน --</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>หน่วยงาน / วอร์ด *</label>
-        <div class="input-wrap"><span class="input-icon">🏥</span>
-          <select class="form-control" id="reg-unit">
-            <option value="">-- เลือกหน่วยงาน --</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>อีเมล</label>
-        <div class="input-wrap"><span class="input-icon">📧</span>
-          <input class="form-control" id="reg-email" type="email" placeholder="email (ไม่บังคับ)">
-        </div>
-      </div>
+    <div class="login-form-panel" style="overflow-y:auto">
+      <h2>สมัครใช้งาน</h2><p>กรอกข้อมูลเพื่อสร้างบัญชีผู้เรียน</p>
+      <div class="form-group"><label>ชื่อ-นามสกุล *</label><div class="input-wrap"><span class="input-icon">👤</span><input class="form-control" id="reg-name" placeholder="ชื่อ-นามสกุล"></div></div>
+      <div class="form-group"><label>Username *</label><div class="input-wrap"><span class="input-icon">🔖</span><input class="form-control" id="reg-username" placeholder="รหัสพนักงาน / username"></div></div>
+      <div class="form-group"><label>รหัสผ่าน *</label><div class="input-wrap"><span class="input-icon">🔒</span><input class="form-control" id="reg-password" type="password" placeholder="อย่างน้อย 4 ตัว"></div></div>
+      <div class="form-group"><label>กลุ่มงาน *</label><div class="input-wrap"><span class="input-icon">🏢</span><select class="form-control dept-select" id="reg-dept" onchange="onRegDeptChange(this.value)"><option value="">-- เลือกกลุ่มงาน --</option></select></div></div>
+      <div class="form-group"><label>หน่วยงาน / วอร์ด *</label><div class="input-wrap"><span class="input-icon">🏥</span><select class="form-control" id="reg-unit"><option value="">-- เลือกหน่วยงาน --</option></select></div></div>
+      <div class="form-group"><label>อีเมล</label><div class="input-wrap"><span class="input-icon">📧</span><input class="form-control" id="reg-email" type="email" placeholder="email (ไม่บังคับ)"></div></div>
       <button class="btn-primary" onclick="doRegister()">สมัครใช้งาน →</button>
-      <div id="reg-error" style="display:none;margin-top:14px;padding:10px 14px;background:rgba(239,71,111,0.12);border:1px solid rgba(239,71,111,0.3);border-radius:8px;font-size:13px;color:#ef476f;"></div>
+      <div id="reg-error" class="form-error"></div>
       <div class="login-divider">หรือ</div>
-      <button class="demo-btn" onclick="showScreen('screen-login')">
-        <span>มีบัญชีอยู่แล้ว? เข้าสู่ระบบ</span>
-        <span class="demo-tag tag-admin">Login →</span>
-      </button>
+      <button class="demo-btn" onclick="showScreen('screen-login')"><span>มีบัญชีอยู่แล้ว? เข้าสู่ระบบ</span><span class="demo-tag tag-admin">Login →</span></button>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════ SCREEN: LEARNER ═══════════════════════════ -->
+<!-- ════════════════ SCREEN: LEARNER (Responsive) ════════════════ -->
 <div id="screen-main" class="screen">
   <div class="topbar">
-    <div class="topbar-brand">
-      <div class="logo-mark">🏥</div>
-      <div class="topbar-brand-text">
-        <span>CBH <span style="color:var(--teal)">Learn</span></span>
-        <small>พยาบาล · ผู้เรียน</small>
-      </div>
-    </div>
+    <div class="topbar-brand"><div class="logo-mark">🏥</div><div class="topbar-brand-text"><span>CBH <span style="color:var(--teal)">Learn</span></span><small>ผู้เรียน</small></div></div>
     <nav class="topbar-nav">
-      <button class="nav-btn active" id="ltab-btn-home"    onclick="switchLearnerTab('home',this)">🏠 หน้าหลัก</button>
-      <button class="nav-btn"        id="ltab-btn-courses" onclick="switchLearnerTab('mycourses',this)">📚 วิชาของฉัน</button>
-      <button class="nav-btn"        id="ltab-btn-progress"onclick="switchLearnerTab('progress',this)">📊 ความก้าวหน้า</button>
-      <button class="nav-btn"        id="ltab-btn-certs"   onclick="switchLearnerTab('certs',this)">🏅 ใบประกาศ</button>
+      <button class="nav-btn active" id="ltab-btn-home"     onclick="switchLearnerTab('home',this)">🏠 <span class="nav-label">หน้าหลัก</span></button>
+      <button class="nav-btn"        id="ltab-btn-courses"  onclick="switchLearnerTab('mycourses',this)">📚 <span class="nav-label">วิชาของฉัน</span></button>
+      <button class="nav-btn"        id="ltab-btn-progress" onclick="switchLearnerTab('progress',this)">📊 <span class="nav-label">ความก้าวหน้า</span></button>
+      <button class="nav-btn"        id="ltab-btn-certs"    onclick="switchLearnerTab('certs',this)">🏅 <span class="nav-label">ใบประกาศ</span></button>
     </nav>
     <div class="topbar-right">
-      <div class="user-chip">
-        <div class="avatar" id="learner-avatar">น</div>
-        <div class="user-chip-info">
-          <div class="user-chip-name" id="learner-name">ผู้เรียน</div>
-          <div class="user-chip-role" id="learner-subrole">หน่วยงาน</div>
-        </div>
-      </div>
-      <button class="btn-icon" onclick="doLogout()" title="ออกจากระบบ">🚪</button>
+      <div class="user-chip"><div class="avatar" id="learner-avatar">น</div><div class="user-chip-info"><div class="user-chip-name" id="learner-name">ผู้เรียน</div><div class="user-chip-role" id="learner-subrole">—</div></div></div>
+      <button class="btn-icon" onclick="doLogout()">🚪</button>
     </div>
   </div>
-
   <div class="main-content">
-    <!-- ── TAB: HOME ── -->
+    <!-- HOME -->
     <div class="tab-panel active" id="ltab-home">
       <div id="learner-welcome" class="welcome-text">สวัสดี 👋</div>
       <div class="stats-row" style="grid-template-columns:repeat(3,1fr)">
@@ -274,23 +152,19 @@
         <div class="stat-card"><div class="sc-icon">⏱</div><div class="sc-val" id="wb-stat-hours">0</div><div class="sc-lbl">ชั่วโมงที่เรียน</div></div>
         <div class="stat-card"><div class="sc-icon">🏅</div><div class="sc-val gold" id="wb-stat-certs">0</div><div class="sc-lbl">ใบประกาศ</div></div>
       </div>
-
       <div class="section-head"><h3>📖 เรียนต่อจากที่ค้างไว้</h3></div>
       <div id="continue-grid"></div>
-
       <div class="section-head"><h3>📚 หลักสูตรทั้งหมด <span id="featured-grid-label" style="font-size:13px;color:var(--teal);font-weight:400"></span></h3></div>
       <div class="course-grid" id="featured-grid"></div>
     </div>
-
-    <!-- ── TAB: MY COURSES ── -->
+    <!-- MY COURSES -->
     <div class="tab-panel" id="ltab-mycourses">
       <div class="section-head"><h3>📚 วิชาของฉัน</h3></div>
       <div class="course-grid" id="mycourses-grid"></div>
     </div>
-
-    <!-- ── TAB: PROGRESS ── -->
+    <!-- PROGRESS -->
     <div class="tab-panel" id="ltab-progress">
-      <div class="section-head"><h3>📊 ความก้าวหน้าการเรียน</h3></div>
+      <div class="section-head"><h3>📊 ความก้าวหน้า</h3></div>
       <div class="stats-row" style="grid-template-columns:repeat(4,1fr)">
         <div class="stat-card"><div class="sc-icon">📚</div><div class="sc-val" id="prog-stat-total">0</div><div class="sc-lbl">วิชาทั้งหมด</div></div>
         <div class="stat-card"><div class="sc-icon">✅</div><div class="sc-val green" id="prog-stat-done">0</div><div class="sc-lbl">เสร็จสิ้น</div></div>
@@ -298,321 +172,281 @@
         <div class="stat-card"><div class="sc-icon">🏅</div><div class="sc-val gold" id="prog-stat-certs">0</div><div class="sc-lbl">ใบประกาศ</div></div>
       </div>
       <div class="data-table">
-        <div class="dt-head" style="grid-template-columns:2fr 1fr 1fr 1fr 110px">
-          <div>หลักสูตร</div><div>หมวดหมู่</div><div>ความก้าวหน้า</div><div>คะแนน</div><div>สถานะ</div>
-        </div>
+        <div class="dt-head" style="grid-template-columns:2fr 1fr 1fr 1fr 110px"><div>หลักสูตร</div><div>หมวด</div><div>ความก้าวหน้า</div><div>คะแนน</div><div>สถานะ</div></div>
         <div id="prog-table-body"></div>
       </div>
     </div>
-
-    <!-- ── TAB: CERTS ── -->
+    <!-- CERTS -->
     <div class="tab-panel" id="ltab-certs">
-      <div class="section-head"><h3>🏅 ใบประกาศนียบัตรของฉัน</h3></div>
+      <div class="section-head"><h3>🏅 ใบประกาศนียบัตร</h3></div>
       <div class="course-grid" id="certs-grid"></div>
       <div id="cert-display"></div>
     </div>
   </div>
+  <!-- Mobile Bottom Nav -->
+  <nav class="mobile-bottom-nav">
+    <button onclick="switchLearnerTab('home',null);setMobileNav(this)">🏠<span>หน้าหลัก</span></button>
+    <button onclick="switchLearnerTab('mycourses',null);setMobileNav(this)">📚<span>วิชาของฉัน</span></button>
+    <button onclick="switchLearnerTab('progress',null);setMobileNav(this)">📊<span>ความก้าวหน้า</span></button>
+    <button onclick="switchLearnerTab('certs',null);setMobileNav(this)">🏅<span>ใบประกาศ</span></button>
+  </nav>
 </div>
 
-<!-- ════════════════════════════ SCREEN: COURSE ════════════════════════════ -->
+<!-- ════════════════ SCREEN: COURSE ════════════════ -->
 <div id="screen-course" class="screen">
   <div class="topbar">
     <div class="topbar-brand" style="cursor:pointer" onclick="backToMain()">
-      <button class="btn-icon">← </button>
-      <div>
-        <div id="course-title-bar" style="font-size:14px;font-weight:700;color:var(--white)">หลักสูตร</div>
-        <div id="course-subtitle-bar" style="font-size:11px;color:var(--text-muted)"></div>
-      </div>
+      <button class="btn-icon">←</button>
+      <div><div id="course-title-bar" style="font-size:14px;font-weight:700;color:var(--white)">หลักสูตร</div><div id="course-subtitle-bar" style="font-size:11px;color:var(--text-muted)"></div></div>
     </div>
-    <div class="topbar-right">
-      <button class="btn-icon" onclick="doLogout()">🚪</button>
-    </div>
+    <div class="topbar-right"><button class="btn-icon" onclick="doLogout()">🚪</button></div>
   </div>
-
   <div class="course-layout">
-    <!-- Sidebar -->
     <div class="course-sidebar">
       <div class="sidebar-card">
-        <div class="sidebar-head">
-          <h4>📋 หลักสูตร</h4>
-          <span id="curriculum-progress" style="font-size:12px;color:var(--teal)">0/6 เสร็จ</span>
-        </div>
+        <div class="sidebar-head"><h4>📋 หลักสูตร</h4><span id="curriculum-progress" style="font-size:12px;color:var(--teal)">0/6 เสร็จ</span></div>
         <div id="curriculum-prog-bar"></div>
         <div id="curriculum-prog-label" class="prog-label"></div>
         <div id="curriculum-list" style="margin-top:12px"></div>
       </div>
     </div>
-
-    <!-- Main -->
     <div class="course-main">
-      <div class="video-box" id="video-area">
-        <div class="video-placeholder" onclick="loadVideo()">
-          <div class="play-ring">▶</div>
-          <p>คลิกเพื่อเล่นวิดีโอ</p>
-        </div>
-      </div>
-
+      <div class="video-box" id="video-area"><div class="video-placeholder" onclick="loadVideo()"><div class="play-ring">▶</div><p>คลิกเพื่อเล่น</p></div></div>
       <div class="lesson-tabs">
         <button class="ltab active" onclick="switchLessonTab('overview',this)">📖 ภาพรวม</button>
         <button class="ltab" onclick="switchLessonTab('notes',this)">📝 บันทึก</button>
         <button class="ltab" onclick="switchLessonTab('quiz',this)">❓ แบบทดสอบ</button>
       </div>
-
-      <div class="lesson-pane active" id="lpane-overview">
-        <h3 style="margin-bottom:12px">เกี่ยวกับหลักสูตร</h3>
-        <p style="color:var(--text-muted);line-height:1.8">เลือกบทเรียนจากแถบด้านซ้ายเพื่อเริ่มเรียน แต่ละบทมีวิดีโอบรรยายและแบบฝึกหัดให้ทบทวนความเข้าใจ</p>
-      </div>
-      <div class="lesson-pane" id="lpane-notes">
-        <h3 style="margin-bottom:12px">บันทึกการเรียน</h3>
-        <textarea class="form-control" rows="10" placeholder="จดบันทึกระหว่างเรียน..." style="resize:vertical"></textarea>
-      </div>
-      <div class="lesson-pane" id="lpane-quiz">
-        <div id="quiz-area"></div>
-      </div>
+      <div class="lesson-pane active" id="lpane-overview"><h3 style="margin-bottom:12px" id="course-desc-title">เกี่ยวกับหลักสูตร</h3><p id="course-desc-text" style="color:var(--text-muted);line-height:1.8">—</p></div>
+      <div class="lesson-pane" id="lpane-notes"><h3 style="margin-bottom:12px">บันทึกการเรียน</h3><textarea class="form-control" rows="10" placeholder="จดบันทึก..." style="resize:vertical"></textarea></div>
+      <div class="lesson-pane" id="lpane-quiz"><div id="quiz-area"></div></div>
     </div>
   </div>
 </div>
 
-<!-- ═════════════════════════════ SCREEN: NSO ═════════════════════════════ -->
+<!-- ════════════════ SCREEN: NSO ════════════════ -->
 <div id="screen-nso" class="screen">
   <div class="topbar">
-    <div class="topbar-brand">
-      <div class="logo-mark" style="background:linear-gradient(135deg,#7c3aed,#5b21b6)">🔮</div>
-      <div class="topbar-brand-text">
-        <span style="color:#a78bfa">CBH NSO</span>
-        <small>หัวหน้าพยาบาล</small>
-      </div>
-    </div>
+    <div class="topbar-brand"><div class="logo-mark" style="background:linear-gradient(135deg,#7c3aed,#5b21b6)">🔮</div><div class="topbar-brand-text"><span style="color:#a78bfa">CBH NSO</span><small>หัวหน้าพยาบาล</small></div></div>
     <nav class="topbar-nav">
-      <button class="nav-btn active" onclick="switchNSOTab('dashboard',this)">📊 Dashboard</button>
-      <button class="nav-btn" onclick="switchNSOTab('learners',this)">👩‍⚕️ ผู้เรียน</button>
-      <button class="nav-btn" onclick="switchNSOTab('courses',this)">📚 หลักสูตร</button>
+      <button class="nav-btn active" onclick="switchNSOTab('dashboard',this)">📊 <span class="nav-label">Dashboard</span></button>
+      <button class="nav-btn" onclick="switchNSOTab('learners',this)">👩‍⚕️ <span class="nav-label">ผู้เรียน</span></button>
+      <button class="nav-btn" onclick="switchNSOTab('exec',this)">🏆 <span class="nav-label">Executive</span></button>
+      <button class="nav-btn" onclick="switchNSOTab('notify',this)">📧 <span class="nav-label">แจ้งเตือน</span></button>
     </nav>
     <div class="topbar-right">
-      <div class="user-chip">
-        <div class="avatar" style="background:linear-gradient(135deg,#7c3aed,#5b21b6)">N</div>
-        <div class="user-chip-info">
-          <div class="user-chip-name" id="nso-name">หัวหน้าพยาบาล</div>
-          <div class="user-chip-role">NSO</div>
-        </div>
-      </div>
+      <div class="user-chip"><div class="avatar" style="background:linear-gradient(135deg,#7c3aed,#5b21b6)">N</div><div class="user-chip-info"><div class="user-chip-name" id="nso-name">หัวหน้า</div><div class="user-chip-role">NSO</div></div></div>
       <button class="btn-icon" onclick="doLogout()">🚪</button>
     </div>
   </div>
-
   <div class="main-content">
-    <!-- ── TAB: DASHBOARD ── -->
+
+    <!-- DASHBOARD -->
     <div class="tab-panel active" id="ntab-dashboard">
-      <div class="filter-bar" style="margin-bottom:20px">
-        <select class="dept-select" id="nso-filter-dept" onchange="onNSODeptFilter()">
-          <option value="">🏢 ทุกกลุ่มงาน</option>
-        </select>
-        <select id="nso-filter-unit" onchange="filterNSODashboard()">
-          <option value="">🏥 ทุกหน่วยงาน</option>
-        </select>
-        <button class="btn btn-ghost btn-sm" onclick="exportReport()">📥 Export</button>
+      <div class="nso-filter-bar">
+        <select class="dept-select" id="nso-filter-dept" onchange="onNSODeptFilter()"><option value="">🏢 ทุกกลุ่มงาน</option></select>
+        <select id="nso-filter-unit" onchange="loadNSODashboard()"><option value="">🏥 ทุกหน่วยงาน</option></select>
+        <button class="btn btn-ghost btn-sm" onclick="exportNSOPDF()">📄 Export PDF</button>
+        <button class="btn btn-ghost btn-sm" onclick="exportNSOExcel()">📊 Export Excel</button>
       </div>
-
       <div class="stats-row" style="grid-template-columns:repeat(5,1fr)">
-        <div class="stat-card"><div class="sc-icon">👩‍⚕️</div><div class="sc-val" id="nso-stat-users">0</div><div class="sc-lbl">ผู้เรียนทั้งหมด</div></div>
-        <div class="stat-card"><div class="sc-icon">✅</div><div class="sc-val green" id="nso-stat-done">0%</div><div class="sc-lbl">อัตราผ่าน</div></div>
-        <div class="stat-card"><div class="sc-icon">📚</div><div class="sc-val" id="nso-stat-active">0</div><div class="sc-lbl">การลงทะเบียน</div></div>
-        <div class="stat-card"><div class="sc-icon">🏅</div><div class="sc-val gold" id="nso-stat-certs">0</div><div class="sc-lbl">ใบประกาศ</div></div>
-        <div class="stat-card"><div class="sc-icon">🔐</div><div class="sc-val" id="nso-today-logins">0</div><div class="sc-lbl">เข้าระบบวันนี้</div></div>
+        <div class="stat-card"><div class="sc-icon">👩‍⚕️</div><div class="sc-val" id="nso-stat-users">—</div><div class="sc-lbl">ผู้เรียน</div></div>
+        <div class="stat-card"><div class="sc-icon">✅</div><div class="sc-val green" id="nso-stat-done">—</div><div class="sc-lbl">อัตราผ่าน</div></div>
+        <div class="stat-card"><div class="sc-icon">📚</div><div class="sc-val" id="nso-stat-active">—</div><div class="sc-lbl">ลงทะเบียน</div></div>
+        <div class="stat-card"><div class="sc-icon">🏅</div><div class="sc-val gold" id="nso-stat-certs">—</div><div class="sc-lbl">ใบประกาศ</div></div>
+        <div class="stat-card"><div class="sc-icon">🔐</div><div class="sc-val" id="nso-today-logins">—</div><div class="sc-lbl">เข้าระบบวันนี้</div></div>
       </div>
-
       <div class="section-head"><h3>📊 ความก้าวหน้าตามกลุ่มงาน</h3></div>
       <div class="chart-wrap" id="nso-dept-chart"></div>
     </div>
 
-    <!-- ── TAB: LEARNERS ── -->
+    <!-- LEARNERS — กรองดูรายบุคคล -->
     <div class="tab-panel" id="ntab-learners">
-      <div class="section-head">
-        <h3>👩‍⚕️ รายชื่อผู้เรียน (<span id="nso-learner-count">0</span> คน)</h3>
-      </div>
-      <div class="filter-bar" style="margin-bottom:16px">
-        <select class="dept-select" id="nso-learner-dept" onchange="onNSOLearnerDeptFilter()">
-          <option value="">🏢 ทุกกลุ่มงาน</option>
+      <div class="section-head"><h3>👩‍⚕️ รายชื่อผู้เรียน <span id="nso-learner-count" style="color:var(--teal);font-size:14px">(0 คน)</span></h3></div>
+      <div class="nso-filter-bar">
+        <div class="search-box"><span>🔍</span><input id="nso-learner-search" placeholder="ค้นหาชื่อ..." oninput="filterNSOLearners()"></div>
+        <select class="dept-select" id="nso-learner-dept" onchange="onNSOLearnerDeptFilter()"><option value="">🏢 ทุกกลุ่มงาน</option></select>
+        <select id="nso-learner-unit" onchange="loadNSOLearners()"><option value="">🏥 ทุกหน่วยงาน</option></select>
+        <select id="nso-learner-course-filter" onchange="loadNSOLearners()"><option value="">📚 ทุกหลักสูตร</option></select>
+        <select id="nso-learner-status-filter" onchange="loadNSOLearners()">
+          <option value="">📋 ทุกสถานะ</option>
+          <option value="notStarted">❌ ยังไม่เริ่ม</option>
+          <option value="inProgress">⏳ กำลังเรียน</option>
+          <option value="passed">✅ ผ่านแล้ว</option>
+          <option value="failed">⚠️ ไม่ผ่าน</option>
         </select>
-        <select id="nso-learner-unit" onchange="loadNSOLearners()">
-          <option value="">🏥 ทุกหน่วยงาน</option>
-        </select>
+        <button class="btn btn-ghost btn-sm" onclick="exportLearnerCSV()">📥 Export</button>
       </div>
       <div class="data-table">
-        <div class="dt-head" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr">
-          <div>ชื่อ-นามสกุล</div><div>กลุ่มงาน</div><div>หน่วยงาน</div><div>สถานะ</div><div>เข้าระบบล่าสุด</div>
+        <div class="dt-head nso-learner-head">
+          <div>ชื่อ-นามสกุล</div><div>กลุ่มงาน</div><div>หน่วยงาน</div>
+          <div>หลักสูตร</div><div>ความก้าวหน้า</div><div>คะแนน</div><div>สถานะ</div>
         </div>
         <div id="nso-learners-body"></div>
       </div>
     </div>
 
-    <!-- ── TAB: COURSES ── -->
-    <div class="tab-panel" id="ntab-courses">
-      <div class="section-head"><h3>📚 หลักสูตรทั้งหมด</h3></div>
-      <div class="course-grid" id="nso-course-grid"></div>
+    <!-- EXEC DASHBOARD -->
+    <div class="tab-panel" id="ntab-exec">
+      <div class="section-head"><h3>🏆 Dashboard ผู้บริหาร</h3>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost btn-sm" onclick="exportExecPDF()">📄 PDF รายงาน</button>
+        </div>
+      </div>
+      <div class="exec-kpi-grid">
+        <div class="kpi-card" style="--kpi-color:var(--teal)"><div class="kpi-icon">👥</div><div class="kpi-val" id="exec-kpi-users">—</div><div class="kpi-label">ผู้เรียนทั้งหมด</div></div>
+        <div class="kpi-card" style="--kpi-color:var(--green)"><div class="kpi-icon">✅</div><div class="kpi-val" id="exec-kpi-pass">—</div><div class="kpi-label">อัตราผ่าน</div></div>
+        <div class="kpi-card" style="--kpi-color:var(--gold)"><div class="kpi-icon">🏅</div><div class="kpi-val" id="exec-kpi-certs">—</div><div class="kpi-label">ใบประกาศ</div></div>
+        <div class="kpi-card" style="--kpi-color:var(--purple)"><div class="kpi-icon">⏱</div><div class="kpi-val" id="exec-kpi-hours">—</div><div class="kpi-label">ชม.เรียนรวม</div></div>
+      </div>
+      <div class="exec-row">
+        <div class="exec-panel">
+          <h4>📊 สถานะการเรียนรู้</h4>
+          <div class="donut-wrap">
+            <svg class="donut-svg" width="160" height="160" viewBox="0 0 160 160" id="exec-donut"></svg>
+            <div class="donut-legend" id="exec-donut-legend"></div>
+          </div>
+        </div>
+        <div class="exec-panel">
+          <h4>🏆 กลุ่มงานที่มีอัตราผ่านสูงสุด</h4>
+          <div id="exec-top-depts"></div>
+        </div>
+      </div>
+      <div class="exec-panel">
+        <h4>📚 สถิติตามหลักสูตร</h4>
+        <div style="overflow-x:auto">
+          <table class="progress-table"><thead><tr><th>หลักสูตร</th><th>ลงทะเบียน</th><th>ผ่าน</th><th>อัตราผ่าน</th><th>คะแนนเฉลี่ย</th></tr></thead><tbody id="exec-course-table"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- EMAIL NOTIFY -->
+    <div class="tab-panel" id="ntab-notify">
+      <div class="section-head"><h3>📧 แจ้งเตือน Email</h3></div>
+      <div class="notify-grid">
+        <div class="exec-panel">
+          <h4>✉️ ส่งการแจ้งเตือน</h4>
+          <div class="email-form">
+            <div class="form-group"><label>ส่งถึง</label>
+              <select id="email-target" onchange="onEmailTargetChange(this.value)">
+                <option value="all">👥 ผู้เรียนทั้งหมด</option>
+                <option value="notStarted">❌ ยังไม่เริ่มเรียน</option>
+                <option value="inProgress">⏳ กำลังเรียน (ไม่สำเร็จ)</option>
+                <option value="passed">✅ ผ่านแล้ว</option>
+                <option value="dept">🏢 กลุ่มงานที่เลือก</option>
+              </select>
+            </div>
+            <div id="email-dept-row" style="display:none" class="form-group"><label>กลุ่มงาน</label><select class="dept-select" id="email-dept-filter"></select></div>
+            <div class="form-group"><label>หัวข้อ Email</label><input id="email-subject" class="form-control" value="แจ้งเตือน: กรุณาสำเร็จหลักสูตรที่ลงทะเบียนไว้"></div>
+            <div class="form-group"><label>เนื้อหา</label><textarea id="email-body" class="form-control" rows="6">เรียน บุคลากรพยาบาลที่เคารพ
+
+กรุณาเข้าสู่ระบบ CBH Learn และสำเร็จหลักสูตรที่ท่านได้ลงทะเบียนไว้
+
+เข้าระบบ: [ลิงค์ระบบ]
+
+ขอบคุณครับ/ค่ะ
+ฝ่ายการพยาบาล โรงพยาบาลชลบุรี</textarea></div>
+            <div id="email-preview-count" style="font-size:12px;color:var(--teal);margin-bottom:12px"></div>
+            <button class="btn btn-teal w100" onclick="sendEmailNotification()">📧 ส่ง Email แจ้งเตือน</button>
+          </div>
+        </div>
+        <div class="exec-panel">
+          <h4>📋 ประวัติการส่ง</h4>
+          <div id="email-log-list" style="max-height:480px;overflow-y:auto"></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════ SCREEN: ADMIN ═════════════════════════════ -->
+<!-- ════════════════ SCREEN: ADMIN ════════════════ -->
 <div id="screen-admin" class="screen">
   <div class="topbar">
-    <div class="topbar-brand">
-      <div class="logo-mark" style="background:linear-gradient(135deg,var(--gold),#c07830)">A</div>
-      <div class="topbar-brand-text">
-        <span style="color:var(--gold)">CBH Admin</span>
-        <small>ระบบผู้ดูแล</small>
-      </div>
-    </div>
+    <div class="topbar-brand"><div class="logo-mark" style="background:linear-gradient(135deg,var(--gold),#c07830)">A</div><div class="topbar-brand-text"><span style="color:var(--gold)">CBH Admin</span><small>ผู้ดูแล</small></div></div>
     <nav class="topbar-nav">
-      <button class="nav-btn active" onclick="switchAdminTab('overview',this)">📊 ภาพรวม</button>
-      <button class="nav-btn" onclick="switchAdminTab('users',this)">👥 ผู้ใช้งาน</button>
-      <button class="nav-btn" onclick="switchAdminTab('courses',this)">📚 หลักสูตร</button>
-      <button class="nav-btn" onclick="switchAdminTab('audit',this)">🔍 Audit Trail</button>
-      <button class="nav-btn" onclick="switchAdminTab('reports',this)">📈 รายงาน</button>
+      <button class="nav-btn active" onclick="switchAdminTab('overview',this)">📊 <span class="nav-label">ภาพรวม</span></button>
+      <button class="nav-btn" onclick="switchAdminTab('users',this)">👥 <span class="nav-label">ผู้ใช้งาน</span></button>
+      <button class="nav-btn" onclick="switchAdminTab('courses',this)">📚 <span class="nav-label">หลักสูตร</span></button>
+      <button class="nav-btn" onclick="switchAdminTab('audit',this)">🔍 <span class="nav-label">Audit</span></button>
+      <button class="nav-btn" onclick="switchAdminTab('reports',this)">📈 <span class="nav-label">รายงาน</span></button>
     </nav>
-    <div class="topbar-right">
-      <div class="user-chip">
-        <div class="avatar admin">A</div>
-        <div class="user-chip-info">
-          <div class="user-chip-name">ผู้ดูแลระบบ</div>
-          <div class="user-chip-role">Administrator</div>
-        </div>
-      </div>
-      <button class="btn-icon" onclick="doLogout()" title="ออกจากระบบ">🚪</button>
-    </div>
+    <div class="topbar-right"><div class="user-chip"><div class="avatar admin">A</div><div class="user-chip-info"><div class="user-chip-name" id="admin-name">ผู้ดูแลระบบ</div><div class="user-chip-role">Administrator</div></div></div><button class="btn-icon" onclick="doLogout()">🚪</button></div>
   </div>
-
   <div class="main-content">
 
-    <!-- ── TAB: OVERVIEW ── -->
+    <!-- OVERVIEW -->
     <div class="tab-panel active" id="atab-overview">
       <div class="stats-row" style="grid-template-columns:repeat(3,1fr)">
         <div class="stat-card"><div class="sc-icon">👥</div><div class="sc-val" id="as-users">—</div><div class="sc-lbl">ผู้ใช้ทั้งหมด</div></div>
         <div class="stat-card"><div class="sc-icon">📚</div><div class="sc-val" id="as-courses">—</div><div class="sc-lbl">หลักสูตร</div></div>
         <div class="stat-card"><div class="sc-icon">✅</div><div class="sc-val green" id="as-pass">—</div><div class="sc-lbl">อัตราผ่าน</div></div>
         <div class="stat-card"><div class="sc-icon">🏅</div><div class="sc-val gold" id="as-certs">—</div><div class="sc-lbl">ใบประกาศ</div></div>
-        <div class="stat-card"><div class="sc-icon">⏱</div><div class="sc-val" id="as-hours">—</div><div class="sc-lbl">ชม.เรียนรวม</div></div>
+        <div class="stat-card"><div class="sc-icon">⏱</div><div class="sc-val" id="as-hours">—</div><div class="sc-lbl">ชม.รวม</div></div>
         <div class="stat-card"><div class="sc-icon">📊</div><div class="sc-val purple" id="as-score">—</div><div class="sc-lbl">คะแนนเฉลี่ย</div></div>
+        <div class="stat-card"><div class="sc-icon">🔐</div><div class="sc-val" id="as-today">—</div><div class="sc-lbl">เข้าวันนี้</div></div>
       </div>
-      <div class="stats-row" style="grid-template-columns:repeat(2,1fr);margin-top:0">
-        <div class="stat-card"><div class="sc-icon">🔐</div><div class="sc-val" id="as-today">—</div><div class="sc-lbl">เข้าระบบวันนี้</div></div>
-      </div>
-
       <div class="section-head"><h3>การลงทะเบียนล่าสุด</h3></div>
       <div class="data-table">
-        <div class="dt-head" style="grid-template-columns:2fr 1.5fr 1fr 1fr 90px">
-          <div>ผู้เรียน</div><div>หลักสูตร/กลุ่มงาน</div><div>ความก้าวหน้า</div><div>สถานะ</div><div>ดำเนินการ</div>
-        </div>
+        <div class="dt-head" style="grid-template-columns:2fr 1.5fr 1fr 1fr 90px"><div>ผู้เรียน</div><div>กลุ่มงาน</div><div>ความก้าวหน้า</div><div>สถานะ</div><div>จัดการ</div></div>
         <div id="recent-enrollments"></div>
       </div>
     </div>
 
-    <!-- ── TAB: USERS ── -->
+    <!-- USERS -->
     <div class="tab-panel" id="atab-users">
-      <div class="section-head">
-        <h3>ผู้ใช้งาน (<span id="user-count">0</span> คน)</h3>
-        <button class="btn btn-teal btn-sm" onclick="openCreateUser()">➕ เพิ่มผู้ใช้</button>
-      </div>
+      <div class="section-head"><h3>ผู้ใช้งาน (<span id="user-count">0</span> คน)</h3><button class="btn btn-teal btn-sm" onclick="openCreateUser()">➕ เพิ่มผู้ใช้</button></div>
       <div class="filter-bar">
-        <div class="search-box">
-          <span>🔍</span>
-          <input id="user-search" placeholder="ค้นหาชื่อ, username..." oninput="filterUsers()">
-        </div>
-        <select id="filter-role" onchange="filterUsers()">
-          <option value="">ทุก Role</option>
-          <option value="admin">Admin</option>
-          <option value="nso">NSO</option>
-          <option value="learner">ผู้เรียน</option>
-        </select>
-        <select class="dept-select" id="filter-dept-users" onchange="filterUsers()">
-          <option value="">ทุกกลุ่มงาน</option>
-        </select>
+        <div class="search-box"><span>🔍</span><input id="user-search" placeholder="ค้นหาชื่อ, username..." oninput="filterUsers()"></div>
+        <select id="filter-role" onchange="filterUsers()"><option value="">ทุก Role</option><option value="admin">Admin</option><option value="nso">NSO</option><option value="learner">ผู้เรียน</option></select>
+        <select class="dept-select" id="filter-dept-users" onchange="filterUsers()"><option value="">ทุกกลุ่มงาน</option></select>
       </div>
       <div class="data-table">
-        <div class="dt-head" style="grid-template-columns:2fr 1.8fr 1fr 1fr 1fr 130px">
-          <div>ผู้ใช้งาน</div><div>กลุ่มงาน / หน่วยงาน</div><div>Role</div><div>สถานะ</div><div>เข้าระบบล่าสุด</div><div>ดำเนินการ</div>
-        </div>
+        <div class="dt-head" style="grid-template-columns:2fr 1.8fr 1fr 1fr 1fr 130px"><div>ผู้ใช้งาน</div><div>กลุ่มงาน / หน่วยงาน</div><div>Role</div><div>สถานะ</div><div>เข้าล่าสุด</div><div>จัดการ</div></div>
         <div id="users-table-body"></div>
       </div>
     </div>
 
-    <!-- ── TAB: COURSES ── -->
+    <!-- COURSES + Quiz/Content Editor -->
     <div class="tab-panel" id="atab-courses">
-      <div class="section-head">
-        <h3>หลักสูตรทั้งหมด</h3>
-        <button class="btn btn-teal btn-sm" onclick="openCreateCourse()">➕ สร้างหลักสูตร</button>
-      </div>
-      <div class="course-grid" id="admin-course-grid"></div>
+      <div class="section-head"><h3>หลักสูตร</h3><button class="btn btn-teal btn-sm" onclick="openCreateCourse()">➕ สร้างหลักสูตร</button></div>
+      <div class="course-admin-grid" id="admin-course-grid"></div>
     </div>
 
-    <!-- ── TAB: AUDIT TRAIL ── -->
+    <!-- AUDIT -->
     <div class="tab-panel" id="atab-audit">
-      <div class="section-head">
-        <h3>🔍 Audit Trail</h3>
-        <button class="btn btn-ghost btn-sm" onclick="exportAuditLog()">📥 Export CSV</button>
-      </div>
-
-      <!-- Summary cards -->
-      <div class="stats-row" style="grid-template-columns:repeat(6,1fr);margin-bottom:20px">
+      <div class="section-head"><h3>🔍 Audit Trail</h3><button class="btn btn-ghost btn-sm" onclick="exportAuditLog()">📥 Export CSV</button></div>
+      <div class="stats-row" style="grid-template-columns:repeat(6,1fr)">
         <div class="stat-card"><div class="sc-icon">📋</div><div class="sc-val" id="audit-sum-total">0</div><div class="sc-lbl">ทั้งหมด</div></div>
-        <div class="stat-card"><div class="sc-icon">🔐</div><div class="sc-val" id="audit-sum-auth">0</div><div class="sc-lbl">Login/Logout</div></div>
-        <div class="stat-card"><div class="sc-icon">👥</div><div class="sc-val" id="audit-sum-user">0</div><div class="sc-lbl">จัดการผู้ใช้</div></div>
+        <div class="stat-card"><div class="sc-icon">🔐</div><div class="sc-val" id="audit-sum-auth">0</div><div class="sc-lbl">Login</div></div>
+        <div class="stat-card"><div class="sc-icon">👥</div><div class="sc-val" id="audit-sum-user">0</div><div class="sc-lbl">ผู้ใช้</div></div>
         <div class="stat-card"><div class="sc-icon">📚</div><div class="sc-val" id="audit-sum-course">0</div><div class="sc-lbl">หลักสูตร</div></div>
         <div class="stat-card"><div class="sc-icon">🎓</div><div class="sc-val" id="audit-sum-learn">0</div><div class="sc-lbl">การเรียน</div></div>
         <div class="stat-card" style="border-color:var(--red)"><div class="sc-icon">⚠️</div><div class="sc-val" style="color:var(--red)" id="audit-sum-risk">0</div><div class="sc-lbl">ความเสี่ยง</div></div>
       </div>
-
-      <!-- Filters -->
-      <div class="filter-bar" style="margin-bottom:16px">
-        <div class="search-box">
-          <span>🔍</span>
-          <input id="audit-search" placeholder="ค้นหาชื่อ, รายละเอียด..." oninput="loadAuditTrail()">
-        </div>
+      <div class="filter-bar">
+        <div class="search-box"><span>🔍</span><input id="audit-search" placeholder="ค้นหา..." oninput="loadAuditTrail()"></div>
         <select id="audit-filter-action" onchange="loadAuditTrail()">
-          <option value="">ทุกกิจกรรม</option>
-          <option value="LOGIN">Login</option>
-          <option value="LOGIN_FAIL">Login Fail</option>
-          <option value="LOGOUT">Logout</option>
-          <option value="CREATE_USER">สร้างผู้ใช้</option>
-          <option value="EDIT_USER">แก้ไขผู้ใช้</option>
-          <option value="DELETE_USER">ลบผู้ใช้</option>
-          <option value="RESET_PWD">รีเซ็ตรหัสผ่าน</option>
-          <option value="TOGGLE_USER">เปิด/ปิดบัญชี</option>
-          <option value="BULK_CREATE">สร้างผู้ใช้แบบกลุ่ม</option>
-          <option value="CREATE_COURSE">สร้างหลักสูตร</option>
-          <option value="EDIT_COURSE">แก้ไขหลักสูตร</option>
-          <option value="DELETE_COURSE">ลบหลักสูตร</option>
-          <option value="ENROLL">ลงทะเบียน</option>
-          <option value="QUIZ_PASS">ผ่านแบบทดสอบ</option>
-          <option value="QUIZ_FAIL">ไม่ผ่านแบบทดสอบ</option>
-          <option value="CERT_ISSUED">รับใบประกาศ</option>
-          <option value="EXPORT_REPORT">Export รายงาน</option>
+          <option value="">ทุกกิจกรรม</option><option value="LOGIN">Login</option><option value="LOGIN_FAIL">Login Fail</option>
+          <option value="CREATE_USER">สร้างผู้ใช้</option><option value="DELETE_USER">ลบผู้ใช้</option>
+          <option value="CREATE_COURSE">สร้างหลักสูตร</option><option value="ENROLL">ลงทะเบียน</option>
+          <option value="QUIZ_PASS">ผ่าน Quiz</option><option value="CERT_ISSUED">รับใบประกาศ</option>
         </select>
-        <select id="audit-filter-role" onchange="loadAuditTrail()">
-          <option value="">ทุก Role</option>
-          <option value="admin">Admin</option>
-          <option value="nso">NSO</option>
-          <option value="learner">ผู้เรียน</option>
-        </select>
-        <select class="dept-select" id="audit-filter-dept" onchange="loadAuditTrail()">
-          <option value="">ทุกกลุ่มงาน</option>
-        </select>
+        <select id="audit-filter-role" onchange="loadAuditTrail()"><option value="">ทุก Role</option><option value="admin">Admin</option><option value="nso">NSO</option><option value="learner">ผู้เรียน</option></select>
+        <select class="dept-select" id="audit-filter-dept" onchange="loadAuditTrail()"><option value="">ทุกกลุ่มงาน</option></select>
       </div>
-
       <div class="data-table">
-        <div class="dt-head" style="grid-template-columns:130px 1.5fr 80px 1fr 1.5fr 90px">
-          <div>เวลา</div><div>ผู้ดำเนินการ</div><div>Role</div><div>กิจกรรม</div><div>รายละเอียด</div><div>หน่วยงาน</div>
-        </div>
+        <div class="dt-head" style="grid-template-columns:130px 1.5fr 80px 1fr 1.5fr 90px"><div>เวลา</div><div>ผู้ดำเนินการ</div><div>Role</div><div>กิจกรรม</div><div>รายละเอียด</div><div>หน่วยงาน</div></div>
         <div id="audit-table-body"></div>
       </div>
     </div>
 
-    <!-- ── TAB: REPORTS ── -->
+    <!-- REPORTS + PDF -->
     <div class="tab-panel" id="atab-reports">
-      <div class="section-head">
-        <h3>📈 รายงานสรุป</h3>
-        <button class="btn btn-ghost btn-sm" onclick="exportReport()">📥 Export รายงาน</button>
+      <div class="section-head"><h3>📈 รายงานสรุป</h3>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost btn-sm" onclick="exportAdminPDF()">📄 PDF</button>
+          <button class="btn btn-ghost btn-sm" onclick="exportReport()">📊 Excel</button>
+        </div>
       </div>
       <div class="stats-row" style="grid-template-columns:repeat(3,1fr)">
         <div class="stat-card"><div class="sc-icon">👥</div><div class="sc-val" id="rpt-total-users">—</div><div class="sc-lbl">ผู้ใช้ทั้งหมด</div></div>
@@ -620,13 +454,16 @@
         <div class="stat-card"><div class="sc-icon">✅</div><div class="sc-val green" id="rpt-pass-rate">—</div><div class="sc-lbl">อัตราผ่าน</div></div>
         <div class="stat-card"><div class="sc-icon">🏅</div><div class="sc-val gold" id="rpt-certs">—</div><div class="sc-lbl">ใบประกาศ</div></div>
         <div class="stat-card"><div class="sc-icon">📊</div><div class="sc-val purple" id="rpt-avg-score">—</div><div class="sc-lbl">คะแนนเฉลี่ย</div></div>
-        <div class="stat-card"><div class="sc-icon">⏱</div><div class="sc-val" id="rpt-hours">—</div><div class="sc-lbl">ชม.เรียนรวม</div></div>
+        <div class="stat-card"><div class="sc-icon">⏱</div><div class="sc-val" id="rpt-hours">—</div><div class="sc-lbl">ชม.รวม</div></div>
       </div>
       <div class="section-head"><h3>อัตราผ่านตามกลุ่มงาน</h3></div>
       <div class="chart-wrap" id="rpt-dept-chart"></div>
     </div>
   </div>
 </div>
+
+<!-- Print frame for PDF export -->
+<iframe id="print-frame" style="display:none"></iframe>
 
 <script src="js/masterdata.js"></script>
 <script src="js/app.js"></script>
