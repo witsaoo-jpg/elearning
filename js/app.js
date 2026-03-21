@@ -679,16 +679,43 @@ async function saveQuizQuestions() {
 /* ── Audit ── */
 async function loadAuditTrail() {
   const params={limit:'300'};
-  const ac=el('audit-filter-action')?.value||'',rc=el('audit-filter-role')?.value||'',dc=el('audit-filter-dept')?.value||'',sc=el('audit-search')?.value?.trim()||'';
-  if(ac)params.action=ac;if(rc)params.role=rc;if(dc)params.deptId=dc;if(sc)params.search=sc;
-  const res=await API.getAuditLog(params);const logs=res.logs||[];App.auditAll=logs;
-  renderAuditTable(logs);renderAuditSummary(logs);
+  const ac=el('audit-filter-action')?.value||'';
+  const rc=el('audit-filter-role')?.value||'';
+  const dc=el('audit-filter-dept')?.value||'';
+  const sc=el('audit-search')?.value?.trim()||'';
+  // ใช้ 'filterAction' ไม่ใช่ 'action' เพื่อไม่ชนกับ GAS routing parameter
+  if(ac) params.filterAction=ac;
+  if(rc) params.role=rc;
+  if(dc) params.deptId=dc;
+  if(sc) params.search=sc;
+
+  // Show loading state in table
+  const tbody=el('audit-table-body');
+  if(tbody) tbody.innerHTML='<div style="padding:28px;text-align:center;color:var(--teal)">⏳ กำลังโหลด Audit Trail...</div>';
+
+  const res  = await API.getAuditLog(params);
+  const logs = res.logs || [];
+  App.auditAll = logs;
+
+  if(!res.success) {
+    if(tbody) tbody.innerHTML=`<div style="padding:28px;text-align:center;color:var(--red)">❌ ไม่สามารถโหลดข้อมูลได้: ${res.error||''}<br><small style="color:var(--text-muted)">ตรวจสอบ GAS URL และ Deploy ใหม่</small></div>`;
+    return;
+  }
+
+  renderAuditTable(logs);
+  renderAuditSummary(logs);
 }
 const filterLogs=loadAuditTrail,loadAdminLogs=loadAuditTrail;
 
 function renderAuditTable(logs) {
   const tbody=el('audit-table-body');if(!tbody)return;
-  if(!logs.length){tbody.innerHTML='<div style="padding:28px;text-align:center;color:var(--text-muted)">ไม่พบข้อมูล</div>';return;}
+  if(!logs.length){
+    const hasFilter = (el('audit-filter-action')?.value||el('audit-filter-role')?.value||el('audit-search')?.value);
+    tbody.innerHTML=hasFilter
+      ? '<div style="padding:28px;text-align:center;color:var(--text-muted)">🔍 ไม่พบข้อมูลตามเงื่อนไขที่เลือก<br><small>ลองเปลี่ยน filter หรือล้าง filter</small></div>'
+      : '<div style="padding:28px;text-align:center;color:var(--text-muted)">📋 ยังไม่มีข้อมูล Audit Log<br><small style="font-size:11px">ระบบจะบันทึกทุกการกระทำ เช่น Login, สร้างผู้ใช้, ลงทะเบียนหลักสูตร ฯลฯ โดยอัตโนมัติ</small></div>';
+    return;
+  }
   tbody.innerHTML=logs.map(e=>{
     const meta=(typeof getAuditAction==='function')?getAuditAction(e.action||'LOGIN'):{icon:'📋',label:e.action,color:'var(--teal)',category:'system'};
     const ts=e.timestamp?new Date(e.timestamp):null,date=ts?ts.toLocaleDateString('th-TH',{day:'2-digit',month:'short',year:'2-digit'}):'—',time=ts?ts.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit',second:'2-digit'}):'—';
